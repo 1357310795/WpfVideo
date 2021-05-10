@@ -1,32 +1,27 @@
-﻿
-Imports System.Runtime.InteropServices
+﻿Imports System.Runtime.InteropServices
 Imports System.Windows.Interop
 
-Public Module rrrr
-    Public Sub Main1()
-        Dim m As New MainWindow2
-        Application.Current.MainWindow = m
-        m.WindowStyle = WindowStyle.None
-        m.Width = 0
-        m.Height = 0
-        m.mediaUriElement.LoadedBehavior = MediaState.Manual
-        m.Top = 0
-        m.Left = 0
-        m.Opacity = 0
-        m.Show()
-        m.startplay()
-        Threading.Thread.Sleep(100)
-        Dim workw = GetWorkerW()
-        Console.WriteLine(workw)
-        SetParent((New WindowInteropHelper(m)).Handle, workw)
-        MoveWindow((New WindowInteropHelper(m)).Handle, 0, 0, 1920, 1080, True)
+Class MainWindow2
+    Dim t As New Timers.Timer
+    Private Sub Window_Loaded(sender As Object, e As RoutedEventArgs)
 
-        m.Opacity = 1
     End Sub
 
 
+    Public Sub startplay()
+        If Command.Length = 0 Then
+            'Application.Current.Shutdown()
+            mediaUriElement.Source = New Uri(Replace("D:\【时光沙盒】高考倒计时：用漂亮的答卷，入场盛夏的远方！111.mp4", """", ""), UriKind.Absolute)
+            mediaUriElement.Play()
+        Else
+            'MsgBox(Replace(Command(), """", ""))
+            mediaUriElement.Source = New Uri(Replace(Command(), """", ""), UriKind.Absolute)
+            mediaUriElement.Play()
+        End If
+    End Sub
+
     <DllImport("user32.dll")>
-    Public Function SendMessageTimeout(ByVal hWnd As IntPtr,
+    Public Shared Function SendMessageTimeout(ByVal hWnd As IntPtr,
                                               ByVal wMsg As Integer,
                                               ByVal wParam As Integer,
                                               ByVal lParam As Integer,
@@ -39,26 +34,26 @@ Public Module rrrr
     Public Delegate Function EnumWindowsProc(ByVal hwnd As IntPtr, ByVal lParam As IntPtr) As Boolean
 
     <DllImport("user32")>
-    Public Function EnumWindows(ByVal lpEnumFunc As EnumWindowsProc, ByVal lParam As IntPtr) As Boolean
+    Public Shared Function EnumWindows(ByVal lpEnumFunc As EnumWindowsProc, ByVal lParam As IntPtr) As Boolean
 
     End Function
 
     <DllImport("user32")>
-    Public Function FindWindowEx(ByVal hWndParent As IntPtr, ByVal hWndChildAfter As IntPtr, ByVal lpWindowClass As String, ByVal lpWindowName As String) As IntPtr
+    Public Shared Function FindWindowEx(ByVal hWndParent As IntPtr, ByVal hWndChildAfter As IntPtr, ByVal lpWindowClass As String, ByVal lpWindowName As String) As IntPtr
 
     End Function
 
 
     <DllImport("user32")>
-    Public Function SetParent(ByVal hWndChild As IntPtr, ByVal hWndNewParent As IntPtr) As IntPtr
+    Public Shared Function SetParent(ByVal hWndChild As IntPtr, ByVal hWndNewParent As IntPtr) As IntPtr
 
     End Function
 
     <DllImport("user32.dll")>
-    Public Function MoveWindow(ByVal handle As IntPtr, ByVal x As Integer, ByVal y As Integer, ByVal nWidth As Integer, ByVal nHeight As Integer, ByVal bRepaint As Boolean) As Boolean
+    Public Shared Function MoveWindow(ByVal handle As IntPtr, ByVal x As Integer, ByVal y As Integer, ByVal nWidth As Integer, ByVal nHeight As Integer, ByVal bRepaint As Boolean) As Boolean
 
     End Function
-    Public Function GetWorkerW() As IntPtr
+    Public Shared Function GetWorkerW() As IntPtr
         Dim progmanHandle = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "Progman", Nothing)
         Dim result = Nothing
         SendMessageTimeout(progmanHandle, &H52C, 0, 0, 0, 1000, result)
@@ -75,4 +70,4 @@ Public Module rrrr
                                         End Function), IntPtr.Zero)
         Return workerWHandle
     End Function
-End Module
+End Class
